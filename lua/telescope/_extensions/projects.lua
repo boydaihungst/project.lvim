@@ -5,11 +5,7 @@ local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
   return
 end
-local session_manager
-local has_vimsession, vimsession = pcall(require, "vim-session")
-if not has_vimsession then
-  session_manager = vimsession
-end
+local has_vimsession, _ = pcall(require, "vim-session")
 
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
@@ -137,8 +133,8 @@ local function delete_project(prompt_bufnr)
   if choice == 1 then
     history.delete_project(selectedEntry)
     -- remove session
-    if session_manager then
-      vim.cmd("DeleteSession!")
+    if has_vimsession then
+      vim.cmd("SessionDelete " .. selectedEntry.value)
     end
 
     local finder = create_finder()
@@ -176,8 +172,9 @@ local function projects(opts)
 
         local on_project_selected = function()
           find_project_files(prompt_bufnr)
-          if config.options.custom_callback then
-            config.options.custom_callback()
+          local selectedEntry = state.get_selected_entry(prompt_bufnr)
+          if has_vimsession and selectedEntry ~= nil then
+            vim.cmd("SessionOpen " .. selectedEntry.value)
           end
         end
 
