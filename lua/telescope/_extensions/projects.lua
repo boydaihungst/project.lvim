@@ -5,6 +5,7 @@ local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
   return
 end
+local has_vimsession, _ = pcall(require, "vim-session")
 
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
@@ -14,9 +15,9 @@ local state = require("telescope.actions.state")
 local builtin = require("telescope.builtin")
 local entry_display = require("telescope.pickers.entry_display")
 
-local history = require("project_nvim.utils.history")
-local project = require("project_nvim.project")
-local config = require("project_nvim.config")
+local history = require("project_lvim.utils.history")
+local project = require("project_lvim.project")
+local config = require("project_lvim.config")
 
 ----------
 -- Actions
@@ -131,6 +132,10 @@ local function delete_project(prompt_bufnr)
 
   if choice == 1 then
     history.delete_project(selectedEntry)
+    -- remove session
+    if has_vimsession then
+      vim.cmd("SessionDelete " .. selectedEntry.value)
+    end
 
     local finder = create_finder()
     state.get_current_picker(prompt_bufnr):refresh(finder, {
@@ -144,37 +149,40 @@ end
 local function projects(opts)
   opts = opts or {}
 
-  pickers.new(opts, {
-    prompt_title = "Recent Projects",
-    finder = create_finder(),
-    previewer = false,
-    sorter = telescope_config.generic_sorter(opts),
-    attach_mappings = function(prompt_bufnr, map)
-      map("n", "f", find_project_files)
-      map("n", "b", browse_project_files)
-      map("n", "d", delete_project)
-      map("n", "s", search_in_project_files)
-      map("n", "r", recent_project_files)
-      map("n", "w", change_working_directory)
+  pickers
+    .new(opts, {
+      prompt_title = "Recent Projects",
+      finder = create_finder(),
+      previewer = false,
+      sorter = telescope_config.generic_sorter(opts),
+      attach_mappings = function(prompt_bufnr, map)
+        map("n", "f", find_project_files)
+        map("n", "b", browse_project_files)
+        map("n", "d", delete_project)
+        map("n", "s", search_in_project_files)
+        map("n", "r", recent_project_files)
+        map("n", "w", change_working_directory)
 
-      map("i", "<c-f>", find_project_files)
-      map("i", "<c-b>", browse_project_files)
-      map("i", "<c-d>", delete_project)
-      map("i", "<c-s>", search_in_project_files)
-      map("i", "<c-r>", recent_project_files)
-      map("i", "<c-w>", change_working_directory)
+        map("i", "<c-f>", find_project_files)
+        map("i", "<c-b>", browse_project_files)
+        map("i", "<c-d>", delete_project)
+        map("i", "<c-s>", search_in_project_files)
+        map("i", "<c-r>", recent_project_files)
+        map("i", "<c-w>", change_working_directory)
 
-      local on_project_selected = function()
-        find_project_files(prompt_bufnr)
-        if(config.options.custom_callback) then
-          config.options.custom_callback()
+        local on_project_selected = function()
+          find_project_files(prompt_bufnr)
+          local selectedEntry = state.get_selected_entry(prompt_bufnr)
+          if has_vimsession and selectedEntry ~= nil then
+            vim.cmd("SessionOpen " .. selectedEntry.value)
+          end
         end
-      end
 
-      actions.select_default:replace(on_project_selected)
-      return true
-    end,
-  }):find()
+        actions.select_default:replace(on_project_selected)
+        return true
+      end,
+    })
+    :find()
 end
 
 return telescope.register_extension({

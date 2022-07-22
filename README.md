@@ -1,6 +1,6 @@
-# 🗃️ project.nvim
+# 🗃️project.lvim
 
-**project.nvim** is an all in one neovim plugin written in lua that provides
+**project.lvim** is an all in one neovim plugin written in lua that provides
 superior project management.
 
 ![Telescope Integration](https://user-images.githubusercontent.com/36672196/129409509-62340f10-4dd0-4c1a-9252-8bfedf2a9945.png)
@@ -53,10 +53,10 @@ Install the plugin with your preferred package manager:
 
 ```vim
 " Vim Script
-Plug 'ahmedkhalf/project.nvim'
+Plug 'boydaihungst/project.lvim'
 
 lua << EOF
-  require("project_nvim").setup {
+  require("project_lvim").setup {
     -- your configuration comes here
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
@@ -69,9 +69,9 @@ EOF
 ```lua
 -- Lua
 use {
-  "ahmedkhalf/project.nvim",
+  "boydaihungst/project.lvim",
   config = function()
-    require("project_nvim").setup {
+    require("project_lvim").setup {
       -- your configuration comes here
       -- or leave it empty to use the default settings
       -- refer to the configuration section below
@@ -82,7 +82,7 @@ use {
 
 ## ⚙️ Configuration
 
-**project.nvim** comes with the following defaults:
+**project.lvim** comes with the following defaults:
 
 ```lua
 {
@@ -111,11 +111,11 @@ use {
   -- Show hidden files in telescope
   show_hidden = false,
 
-  -- When set to false, you will get a message when project.nvim changes your
+  -- When set to false, you will get a message when project.lvim changes your
   -- directory.
   silent_chdir = true,
 
-  -- Path where project.nvim will store the project history for use in
+  -- Path where project.lvim will store the project history for use in
   -- telescope
   datapath = vim.fn.stdpath("data"),
 
@@ -130,7 +130,7 @@ called for the plugin to start.
 
 ### Pattern Matching
 
-**project.nvim**'s pattern engine uses the same expressions as vim-rooter, but
+**project.lvim**'s pattern engine uses the same expressions as vim-rooter, but
 for your convenience, I will copy paste them here:
 
 To specify the root is a certain directory, prefix it with `=`.
@@ -178,7 +178,7 @@ require('telescope').load_extension('projects')
 
 #### Telescope mappings
 
-**project.nvim** comes with the following mappings:
+**project.lvim** comes with the following mappings:
 
 | Normal mode | Insert mode | Action                     |
 | ----------- | ----------- | -------------------------- |
@@ -194,8 +194,8 @@ require('telescope').load_extension('projects')
 Get a list of recent projects:
 
 ```lua
-local project_nvim = require("project_nvim")
-local recent_projects = project_nvim.get_recent_projects()
+local project_lvim = require("project_lvim")
+local recent_projects = project_lvim.get_recent_projects()
 
 print(vim.inspect(recent_projects))
 ```
