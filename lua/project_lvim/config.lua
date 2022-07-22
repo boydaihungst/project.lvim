@@ -45,7 +45,7 @@ M.options = {}
 M.setup = function(options)
   M.options = vim.tbl_deep_extend("force", M.defaults, options or {})
 
-  local glob = require("project_nvim.utils.globtopattern")
+  local glob = require("project_lvim.utils.globtopattern")
   local home = vim.fn.expand("~")
   M.options.exclude_dirs = vim.tbl_map(function(pattern)
     if vim.startswith(pattern, "~/") then
@@ -56,8 +56,8 @@ M.setup = function(options)
 
   vim.opt.autochdir = false -- implicitly unset autochdir
 
-  require("project_nvim.utils.path").init()
-  require("project_nvim.project").init()
+  require("project_lvim.utils.path").init()
+  require("project_lvim.project").init()
 end
 
 return M
